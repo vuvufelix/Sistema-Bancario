@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exercícios de classes</title>
+</head>
+<body>
+    <script>
+
+            class Utils {
+                static configLinguagem = 'pt-br';
+                static configTime = {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                };
+                // Que vai pegar a data formatada
+                static getFormatDate() {
+                    let date = new Date();
+                    return date.toLocaleDateString(this.configLinguagem, this.configTime);
+                }
+            }
+
+            class Conta {
+                constructor(nome,numero,saldo) {
+                    this.nome = nome;
+                    this.numero = numero;
+                    this.saldo = saldo;
+                    this.extrato = [];
+                }
+                // Para monstrar o nosso extrato na tela
+                get exibirExtratos () {
+                    console.log('.............Extrato da conta............');
+                    // Lógica para percorrer todos os arrays do extrato
+                    this.extrato.forEach(item =>{
+                        console.log(item);
+                    })
+
+                    console.log('.............Fim da conta............');
+                }
+                // Extrato bancário
+                registrarNoExtrato(item) {
+                    this.extrato.push(item);
+                }
+            }
+
+
+            class ContaPoupança extends Conta {
+                #taxaDeSaque = 0.10;
+
+                saque(valor) {
+                    let taxaDeSaqueDoValor = valor * this.#taxaDeSaque;
+                    let valorDoSaqueComTaxa = valor + taxaDeSaqueDoValor;
+                    // Verificar o saldo
+                    if(valorDoSaqueComTaxa > this.saldo) {
+                        throw new Error('Saldo insuficiente');
+                    }
+                    // Lógica para retirar o valor da conta
+                    this.saldo = this.saldo - valorDoSaqueComTaxa;
+                    this.registrarNoExtrato(`${Utils.getFormatDate()} - Saque de: ${valor} - Saldo de: ${this.saldo}`);
+                    console.log(`O saldo atual após o saque é de: ${this.saldo}`);
+                }
+
+                deposito(valor) {
+                    this.saldo = this.saldo + valor
+                    this.registrarNoExtrato(`${Utils.getFormatDate()} - Depósito de: ${valor} - Saldo de: ${this.saldo}`);
+                }
+            }
+
+            let novaContaPoupança = new ContaPoupança('fidelcio',1234,1000000);
+            novaContaPoupança.saque(100);
+            novaContaPoupança.deposito(1500000);
+            
+
+            // Para chamar o geter para poder utilizar ele 
+            novaContaPoupança.exibirExtratos;
+
+    </script>
+</body>
+</html>
